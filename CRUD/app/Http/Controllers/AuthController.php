@@ -23,14 +23,18 @@ class AuthController extends Controller
             'email.unique' => 'Este e-mail já está em uso.',
             'password.required' => 'O campo senha é obrigatório.',
             'password.min' => 'A senha deve ter no mínimo 3 caracteres.',
-            'password.confirmed' => 'As senhas não coincidem.'
+            'password.confirmed' => 'As senhas não coincidem.',
         ]);
+
+            // Verifique se 'is_admin' está presente no request e defina como verdadeiro ou falso
+            $isAdmin = $request->has('is_admin') ? true : false;
 
         // Criação do usuário
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
+            'is_admin' => $isAdmin,
         ]);
 
         // Autenticar o usuário
@@ -41,24 +45,27 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-{
-    // Validação dos dados
-    $credentials = $request->validate([
-        'email' => 'required|string|email',
-        'password' => 'required|string',
-    ]);
+    {
+        $credentials = $request->only('email', 'password');
 
-    // Verificar as credenciais e autenticar o usuário
-    if (Auth::attempt($credentials)) {
-        // Login bem-sucedido
-        $request->session()->regenerate();
+        if (Auth::attempt($credentials)) {
+            // Autenticação bem-sucedida, redireciona para o dashboard
+            return redirect()->route('dashboard');
+        }
 
-        return redirect()->intended('dashboard')->with('success', 'Login bem-sucedido!');
+        // Autenticação falhou, retorna com erro
+        return back()->withErrors([
+            'email' => 'As credenciais fornecidas não são válidas.',
+        ]);
+    }
+        public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home');
     }
 
-    // Se as credenciais estiverem erradas
-    return back()->withErrors([
-        'email' => 'As credenciais fornecidas estão incorretas.',
-    ]);
-}
+
 }
