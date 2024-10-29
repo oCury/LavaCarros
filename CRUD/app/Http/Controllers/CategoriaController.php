@@ -7,64 +7,67 @@ use App\Models\Categoria;
 
 class CategoriaController extends Controller
 {
-    public function index() 
+/**
+     * Exibe a lista de categorias.
+     */
+    public function index()
     {
-        //Mesma coisa que SELECT * FROM categoria
-        //Categoria::all() => Pega todas as categorias
-        //Categoria::all()->where("cat_ativo", "1") => Somente ativos        
-        $categorias = Categoria::where("cat_ativo", "1")->get();
-
-        return view('categoria.index', compact('categorias') );
+        $categorias = Categoria::all(); // Busca todas as categorias
+        return view('categoria.index', compact('categorias')); // Envia para a view
     }
 
-    public function IncluirCategoria(Request $request) 
+    /**
+     * Armazena uma nova categoria no banco de dados.
+     */
+    public function store(Request $request)
     {
-        //$_POST['cat_nome']
-        $cat_nome = $request->input("cat_nome");
-        $cat_descricao = $request->input("cat_descricao");
+        // Validação dos campos
+        $request->validate([
+            'cat_nome' => 'required|string|max:255',
+            'cat_descricao' => 'required|string',
+        ]);
 
-        $nova = new Categoria;
-        $nova->cat_nome = $cat_nome;
-        $nova->cat_descricao = $cat_descricao;
-        $nova->cat_ativo = 0;
-        $nova->save();
+        // Criação da categoria
+        Categoria::create($request->all());
 
-        return redirect('/categoria');
-
-        //INSERT INTO categoria (id, cat_nome, cat_descricao)
-        // VALUES ( ???, 'VALOR', 'DESCRICAO')
+        // Redireciona para a lista com mensagem de sucesso
+        return redirect()->route('categoria.index')->with('success', 'Categoria criada com sucesso!');
     }
 
-    public function ExcluirCategoria($id)
+    /**
+     * Exibe a página de edição para uma categoria.
+     */
+        public function edit($id)
     {
-        //SELECT * FROM categoria WHERE id = ID        
-        $cat = Categoria::where("id", $id)->first();
-        $cat->cat_ativo = 0;
-        $cat->save();
+        $categoria = Categoria::findOrFail($id); // Busca a categoria pelo ID
+        return view('categoria.edit', compact('categoria')); // Envia para a view de edição
+    }
+    /**
+     * Atualiza uma categoria no banco de dados.
+     */
+    public function update(Request $request, $id)
+    {
+        // Validação dos campos
+        $request->validate([
+            'cat_nome' => 'required|string|max:255',
+            'cat_descricao' => 'required|string',
+        ]);
 
-        //UPDATE categoria SE cat_Ativo = 0 WHERE id=id
+        // Atualiza a categoria
+        $categoria = Categoria::findOrFail($id);
+        $categoria->update($request->all());
 
+        // Redireciona para a lista com mensagem de sucesso
+        return redirect()->route('categoria.index')->with('success', 'Categoria atualizada com sucesso!');
     }
 
-    public function BuscarAlteracao($id) 
+    public function destroy($id)
     {
-        $categoria = Categoria::where("id", $id)->first();
+        $categoria = Categoria::findOrFail($id); // Busca a categoria pelo ID
+        $categoria->delete(); // Exclui a categoria
 
-        return view('categoria.alterar', compact('categoria'));
-    }
-
-    public function ExecutaAlteracao(Request $request)
-    {
-        $dado_nome = $request->input("cat_nome");
-        $dado_desc = $request->input("cat_descricao");
-        $dado_id = $request->input('id');
-
-        $categoria = Categoria::where("id", $dado_id)->first();
-        $categoria->cat_nome = $dado_nome;
-        $categoria->cat_descricao = $dado_desc;
-        $categoria->save();
-
-        return redirect('/categoria');
+        // Redireciona para a lista com mensagem de sucesso
+        return redirect()->route('categoria.index')->with('success', 'Categoria excluída com sucesso!');
     }
 }
 

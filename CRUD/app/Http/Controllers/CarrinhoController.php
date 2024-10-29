@@ -10,41 +10,34 @@ use Illuminate\Support\Facades\Auth;
 
 class CarrinhoController extends Controller
 {
-    public function index()
+        public function index()
     {
-        // Buscando os pedidos do usuário logado
-        $pedidos = Pedido::where('user_id', Auth::id())
-                         ->where('status', 'Pendente')
-                         ->with('produtos')
-                         ->get();
+        $carrinho = session()->get('carrinho', []);
+        return view('carrinho.index', compact('carrinho'));
+    }
+    public function compras()
+    {
+        $pedidos = Pedido::where('user_id', Auth::id())->get();
 
-        // Retornando a view com os pedidos
-        return view('carrinho.index', compact('pedidos'));
+        return view('carrinho.compras', compact('pedidos'));
     }
 
     // Adicionar um produto ao carrinho
-    public function adicionar(Request $request, $produtoId)
+    public function adicionar(Request $request)
     {
-        $produto = Produto::findOrFail($produtoId);
+        $carrinho = session()->get('carrinho', []);
 
-        $itemCarrinho = Carrinho::where('produto_id', $produtoId)
-                                ->where('user_id', Auth::id())
-                                ->first();
+        // Adiciona o plano ao carrinho
+        $carrinho[] = [
+            'nome' => $request->nome,
+            'preco' => $request->preco,
+        ];
 
-        if ($itemCarrinho) {
-            // Atualiza a quantidade se o produto já estiver no carrinho
-            $itemCarrinho->quantidade += $request->input('quantidade', 1);
-            $itemCarrinho->save();
-        } else {
-            // Cria um novo item no carrinho
-            Carrinho::create([
-                'produto_id' => $produtoId,
-                'quantidade' => $request->input('quantidade', 1),
-                'user_id' => Auth::id(),
-            ]);
-        }
+        // Armazena o carrinho atualizado na sessão
+        session()->put('carrinho', $carrinho);
+        session()->flash('mensagem-sucesso', 'Plano adicionado ao carrinho com sucesso!');
 
-        return redirect()->route('carrinho.index')->with('success', 'Produto adicionado ao carrinho!');
+        return redirect()->back();
     }
 
     // Remover um item do carrinho

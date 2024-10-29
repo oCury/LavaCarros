@@ -99,6 +99,12 @@
                                 <a href="\about" class="nav-item nav-link">Sobre</a>
                                 <a href="\service" class="nav-item nav-link">Serviços</a>
                                 <a href="\contact" class="nav-item nav-link">Contato</a>
+                                <a href="{{ route('carrinho.index') }}"
+                                    class="btn btn-custom d-flex align-items-center"
+                                    style="margin-left: 500px; margin-top: 35px;">
+                                    <i class="material-icons me-1">shopping_cart</i>
+                                    <span class="badge bg-secondary">{{ session('carrinho_count', 0) }}</span>
+                                </a>
                             </div>
                                 <div class="ml-auto">
                                     <div class="container mt-5">
@@ -276,6 +282,94 @@
             </div>
         </div>
         <!-- Service End -->
+          <!-- Price Start -->
+        <div class="price">
+            <div class="container">
+                <div class="section-header text-center">
+                    <p>Washing Plan</p>
+                    <h2>Choose Your Plan</h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="price-item">
+                            <div class="price-header">
+                                <h3>Basic Cleaning</h3>
+                                <h2><span>$</span><strong>25</strong><span>.99</span></h2>
+                            </div>
+                            <div class="price-body">
+                                <ul>
+                                    <li><i class="far fa-check-circle"></i>Seats Washing</li>
+                                    <li><i class="far fa-check-circle"></i>Vacuum Cleaning</li>
+                                    <li><i class="far fa-check-circle"></i>Exterior Cleaning</li>
+                                    <li><i class="far fa-times-circle"></i>Interior Wet Cleaning</li>
+                                    <li><i class="far fa-times-circle"></i>Window Wiping</li>
+                                </ul>
+                            </div>
+                            <div class="price-footer">
+                                <form method="POST" action="{{ route('carrinho.adicionar') }}">
+                                    @csrf
+                                    <input type="hidden" name="nome" value="Basic Cleaning">
+                                    <input type="hidden" name="preco" value="25.99">
+                                    <button type="submit" class="btn btn-custom">Book Now</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="price-item featured-item">
+                            <div class="price-header">
+                                <h3>Premium Cleaning</h3>
+                                <h2><span>$</span><strong>35</strong><span>.99</span></h2>
+                            </div>
+                            <div class="price-body">
+                                <ul>
+                                    <li><i class="far fa-check-circle"></i>Seats Washing</li>
+                                    <li><i class="far fa-check-circle"></i>Vacuum Cleaning</li>
+                                    <li><i class="far fa-check-circle"></i>Exterior Cleaning</li>
+                                    <li><i class="far fa-check-circle"></i>Interior Wet Cleaning</li>
+                                    <li><i class="far fa-times-circle"></i>Window Wiping</li>
+                                </ul>
+                            </div>
+                            <div class="price-footer">
+                                <form method="POST" action="{{ route('carrinho.adicionar') }}">
+                                    @csrf
+                                    <input type="hidden" name="nome" value="Basic Cleaning">
+                                    <input type="hidden" name="preco" value="25.99">
+                                    <button type="submit" class="btn btn-custom">Book Now</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="price-item">
+                            <div class="price-header">
+                                <h3>Complex Cleaning</h3>
+                                <h2><span>$</span><strong>49</strong><span>.99</span></h2>
+                            </div>
+                            <div class="price-body">
+                                <ul>
+                                    <li><i class="far fa-check-circle"></i>Seats Washing</li>
+                                    <li><i class="far fa-check-circle"></i>Vacuum Cleaning</li>
+                                    <li><i class="far fa-check-circle"></i>Exterior Cleaning</li>
+                                    <li><i class="far fa-check-circle"></i>Interior Wet Cleaning</li>
+                                    <li><i class="far fa-check-circle"></i>Window Wiping</li>
+                                </ul>
+                            </div>
+                            <div class="price-footer">
+                                <form method="POST" action="{{ route('carrinho.adicionar') }}">
+                                    @csrf
+                                    <input type="hidden" name="nome" value="Basic Cleaning">
+                                    <input type="hidden" name="preco" value="25.99">
+                                    <button type="submit" class="btn btn-custom">Book Now</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Price End -->
+
         <!-- Footer Start -->
         <div class="footer">
             <div class="container">

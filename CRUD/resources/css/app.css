@@ -1,0 +1,31 @@
+.btn-custom {
+    background-color: #3498db;
+    color: white;
+    border-radius: 25px;
+    padding: 8px 16px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-custom i.material-icons {
+    font-size: 20px;
+    margin-right: 5px;
+}
+
+.badge {
+    background-color: red;
+    color: white;
+    font-size: 0.8rem;
+    margin-left: 5px;
+    padding: 3px 7px;
+    border-radius: 12px;
+}
+
+.dropdown {
+    margin-right: 15px;
+}
+
+.align-items-center {
+    display: flex;
+    align-items: center;
+}

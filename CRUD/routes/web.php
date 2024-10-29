@@ -6,15 +6,14 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProdutoController;
 use App\Http\Controllers\CarrinhoController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\HomeController;
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/categoria', [ CategoriaController::class, 'index' ])->name('categoria');
-    Route::get("/categoria/exc/{id}", [ CategoriaController::class, 'ExcluirCategoria' ])->name('categoria_ex');
-    Route::get("/categoria/upd/{id}",
-        [ CategoriaController::class, 'BuscarAlteracao' ]
-    )->name('categoria_upd');
-
+    // Route::get('/categoria', [CategoriaController::class, 'index'])->name('categoria.index');
+    // Route::get('/categoria/create', [CategoriaController::class, 'create'])->name('categoria.create');
+    // Route::post('/categoria', [CategoriaController::class, 'store'])->name('categoria.store');
+    Route::resource('categoria', CategoriaController::class);
     // Página inicial pública (Home)
     Route::get('/', function () {
         return view('carwash.home');  // Sua página inicial, sem necessidade de login
@@ -59,22 +58,29 @@ Route::middleware('auth')->group(function () {
         return view('carwash.service');
     })->name('service');
 
+    Route::get('/', [HomeController::class, 'index'])->name('index');
+    Route::get('/pesquisa', [HomeController::class, 'pesquisa'])->name('home.pesquisa');
     Route::middleware('auth')->group(function () {
-        Route::get('/carrinho', [CarrinhoController::class, 'index'])->name('carrinho.index');
-        Route::post('/carrinho/adicionar/{produtoId}', [CarrinhoController::class, 'adicionar'])->name('carrinho.adicionar');
-        Route::delete('/carrinho/remover/{id}', [CarrinhoController::class, 'remover'])->name('carrinho.remover');
-        Route::delete('/carrinho/limpar', [CarrinhoController::class, 'limpar'])->name('carrinho.limpar');
+        Route::get('/compras', [CarrinhoController::class, 'compras'])->name('carrinho.compras');
     });
 
     Route::middleware('auth')->group(function () {
-        Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
-        Route::get('/pedidos/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
+        Route::get('/carrinho', [CarrinhoController::class, 'index'])->name('carrinho.index');
+        Route::post('/carrinho/adicionar', [CarrinhoController::class, 'adicionar'])->name('carrinho.adicionar');
+        Route::delete('/carrinho/remover/{id}', [CarrinhoController::class, 'remover'])->name('carrinho.remover');
     });
+
+    Route::resource('categoria', CategoriaController::class);
+    Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+    Route::get('/pedidos/{id}', [PedidoController::class, 'show'])->name('pedidos.show');
+    Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store');
 
     Route::post('/produtos',
         [ProdutoController::class,'salvarNovoProduto']
     )->name('novo_produto');
-});
+    Route::post('/produtos/novo', [ProdutoController::class, 'salvarNovoProduto'])->name('novo_produto');
+    Route::get('/produtos', [ProdutoController::class, 'index'])->name('produtos_index');
+    });
 
 Route::get('/login', function () {
     return view("admin_layout.login");

@@ -12,9 +12,9 @@ class Produto extends Model
     protected $table = "produtos";
 
     protected $fillable = [
-                    'cat_id', 
-                    'prod_nome', 
-                    'prod_quantidade', 
+                    'cat_id',
+                    'prod_nome',
+                    'prod_quantidade',
                     'prod_descricao'
                 ];
 
@@ -22,5 +22,12 @@ class Produto extends Model
     public function categoria()
     {
         return $this->belongsTo(Categoria::class, 'cat_id');
+    }
+
+    public function pedidos()
+    {
+        return $this->belongsToMany(Pedido::class, 'pedido_produto')
+                    ->withPivot('quantidade')
+                    ->withTimestamps();
     }
 }

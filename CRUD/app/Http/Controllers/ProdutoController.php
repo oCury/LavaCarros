@@ -19,17 +19,24 @@ class ProdutoController extends Controller
     }
 
     public function salvarNovoProduto(Request $request)
-    {
-        $request->validate([
-            'cat_id' => 'required|exists:categoria,id',
-            'prod_nome' => 'required|string|max:30',
-            'prod_quantidade' => 'required|integer',
-            'prod_descricao' => 'nullable|string',
-        ]);
+{
+    $request->validate([
+        'cat_id' => 'required|exists:categorias,id',  // Corrigido o nome da tabela
+        'prod_nome' => 'required|string|max:30',
+        'prod_quantidade' => 'required|integer',
+        'prod_descricao' => 'nullable|string',
+    ]);
 
-        Produto::create($request->all());
-        return redirect()->route('produtos_index')->with('success', 'Produto criado com sucesso!');
-    }
+    // Criar o produto
+    Produto::create([
+        'cat_id' => $request->cat_id,
+        'prod_nome' => $request->prod_nome,
+        'prod_quantidade' => $request->prod_quantidade,
+        'prod_descricao' => $request->prod_descricao,
+    ]);
+
+    return redirect()->route('produtos_index')->with('success', 'Produto criado com sucesso!');
+}
 
     public function detalhesProduto(Produto $produto)
     {
